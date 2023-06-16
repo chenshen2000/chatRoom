@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>凯-聊天室</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html{
+            height: 90vh;
+        }
+        body{
+            font-size: 14px;
+        }
+        img {
+          width:120px;
+        }
+        .title{
+            text-align: center;
+            font-size: 18px;
+            background-color: rgb(19, 153, 248);
+            width:300px;
+            line-height: 30px;
+            height:30px;
+            letter-spacing: 2px;
+            color:#fff;
+            position: fixed;
+            top:0;
+            left:50%;
+            transform: translateX(-150px);
+            z-index:100;
+        }
+        .triangle{
+            margin: 0 auto ;
+            width: 300px;
+            height: 88vh;
+            background-color: #ebebe9;
+            overflow: auto;
+            padding-top:30px;
+        }
+        .triangle::-webkit-scrollbar{
+            display:none;
+        }
+        .triangle ul{
+            padding: 10px;
+        }
+        .triangle li{
+            padding: 5px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .triangle li>span{
+            position: absolute;
+            top:35px;
+            font-size: 12px;
+            color:gray;
+        }
+        .triangle li div{
+            position: relative;
+            border-radius: 7px;
+            background-color: #a6e860;
+            word-break:break-all;
+            /* overflow:hidden; */
+            padding: 6px 10px 8px 10px;
+            z-index: 1;
+            display:inline-block;
+            vertical-align: top;
+        }
+        .textLeft{
+            display: flex;
+            justify-content: left;
+        }
+        .triangle .textLeft div{
+            background-color: white;
+        }
+        .triangle .textLeft span{
+            left:-8px;
+        }
+        .triangle li.textLeft:before{
+            content: "";
+            background-image:url("$#requestURL#$/images/left.jpg");
+            background-size: 30px 30px;
+            box-sizing: border-box;
+            position: relative;
+            left: -10px;
+            top: 0px;
+            width:30px;
+            height:30px;
+            display: inline-block;
+        }
+        .triangle li.textLeft div:before{
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right: 8px solid white;
+            position: absolute;
+            top: 8px;
+            left: -16px;
+        }
+        .triangle li.textRight:after{
+            content: "";
+            background-image:url("$#requestURL#$/images/right.jpg");
+            background-size: 30px 30px;
+            box-sizing: border-box;
+            position: relative;
+            right: -10px;
+            top: 0px;
+            width:30px;
+            height:30px;
+            display: inline-block;
+
+        }
+        .triangle li.textRight div:after{
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-left: 8px solid #a6e860;
+            position: absolute;
+            top: 8px;
+            right: -16px;
+        }
+        li{
+            list-style: none;
+        }
+        .textRight{
+            display: flex;
+            justify-content: right;
+        }
+
+        .triangle .textRight span{
+            right:-8px;
+        }
+
+        .footer{
+            position:fixed;
+            top:93vh;
+            left:50%;
+            transform: translateX(-150px);
+            width:300px;
+            height:34px;
+            z-index: 100;
+            background-color: #fff;
+        }
+        #inputContent{
+            width:75%;
+            height:30px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #btn{
+            width:20%;
+            height:34px;
+            background-color: rgb(19, 153, 248);
+            color:#fff;
+            border-style:none;
+            font-size:18px;
+            border-radius:4px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left:2px;
+        }
+        #btn:hover{
+            transform: scale(1.1);
+            border-radius: 6px;
+        }
+
+        .width65{
+          width: 65%;
+        }
+    </style>
+    <script src="$#requestURL#$/common/socket.io.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="triangle">
+        <p class="title">聊天室</p>
+        <hr>
+        <ul>
+        </ul>
+        <div class="footer">
+            <input type="text" id="inputContent"/>
+            <button id="btn">发送</button>
+        </div>
+    </div>
+    <script>
+  var iosocket = null;
+         window.onload = function () {
+            var time=new Date().getTime();
+            var url="$#requestURL#$?nickName=$#name#$&room=$#room#$&tt="+time;
+             // 连接
+             iosocket = io.connect(url);
+             iosocket.on('connect',function(){
+                 iosocket.send('已上线 ,可以在线交流了！')
+             }) 
+             // 收集
+             iosocket.on('message',function(message){
+                 var chatroom = document.querySelector('ul');
+                 chatroom.innerHTML += `<li class="textLeft"><div>${message.split(":::")[1]}</div><span>${message.split(":::")[0]}<span></li>`;
+                 chatroom.scrollIntoView(false);
+                 setTimeout(()=>{
+                  var contentObj=document.querySelectorAll(".textLeft")[document.querySelectorAll(".textLeft").length-1].children[0];
+                  if(contentObj.clientWidth>196){
+                    contentObj.classList.add("width65");
+                  }
+                 },10);
+             })
+             // 关闭
+             iosocket.on('disconnect',function(){
+                 console.log('服务器关闭');
+             })
+             // 发送
+             function send(){
+                var chatroom = document.querySelector('ul');
+                chatroom.innerHTML+=`<li class="textRight"><div>${inputContent.value}</div><span>${url.split("&")[0].split("=")[1]}<span></li>`
+                chatroom.scrollIntoView(false);
+                 iosocket.emit("message",inputContent.value);
+                 inputContent.value = '';
+                 setTimeout(()=>{
+                  var contentObj=document.querySelectorAll(".textRight")[document.querySelectorAll(".textRight").length-1].children[0];
+                  if(contentObj.clientWidth>196){
+                    contentObj.classList.add("width65");
+                  }
+                 },10);
+             }
+             // 回车
+             document.onkeyup = function (event) {
+                 if (event.key == 'Enter' && inputContent.value!=""){
+                     send()
+                 }
+             }
+             // 按钮
+             btn.onclick = function () {
+                 send();
+             }
+         }
+    </script>
+</body>
+</html>
+
+
+<!-- <a href="$#requestURL#$/download/questionnire.js" style="color:red">点击下载</a> -->
+<!-- <a href="$#requestURL#$/download/questionnire.js" >点击下载</a> -->
+<!-- <img src="https://img0.baidu.com/it/u=2361669612,319413600&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"></img> -->

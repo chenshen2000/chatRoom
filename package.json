@@ -1,0 +1,21 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "formidable": "^1.2.6",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "javascript-obfuscator": "^3.0.0",
+    "md5": "^2.3.0",
+    "mockjs": "^1.1.0",
+    "socket.io": "^4.0.0"
+  }
+}

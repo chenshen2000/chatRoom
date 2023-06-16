@@ -1,0 +1,37 @@
+.my_container_20230512 {
+    width: 400px;
+    border: 1px solid #ddd;
+    text-align: center;
+    padding-bottom: 10px;
+  }
+  .my_container_20230512 p{
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+  }
+  .my_container_20230512 img{
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+  }
+  .my_container_20230512 input{
+    width: 340px;
+    display: block;
+    margin: 10px auto;
+  }
+  .my_container_20230512 .time{
+    width: 340px;
+    height: 30px;
+    margin: 0px auto;
+  }
+  .my_container_20230512 .time .left{
+    float: left;
+  }
+  .my_container_20230512 .time .right{
+    float: right;
+  }
+  canvas{
+    width: 640px; height: 360px; position: absolute;
+    top: 0; left: 0;
+  }
+  .my_container_20230512{ position: relative; }
